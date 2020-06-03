@@ -2,16 +2,47 @@ const express = require('express');
 const MongoClient = require("mongodb").MongoClient;
 const app = express();
 
+// si on rencontre une erreur en éxécutant une requete
+function erreurRequete(error, results){
+  console.log("La requête a échoué");
+  throw error;
+}
 
+//si on ne rencontre pas d'erreur
+function reussiteRequete(error, results){
+  //res.render('home.ejs', {bdd : results});
+}
 
 // affiche la totalité de la BDD sur la page d'accueil
 function displayHome(req, res){
   // extraction des données depuis mongoDB
-  db.collection("chats").find().toArray(function (error, results) {
+  let vLookup = {$lookup:
+    {
+        from: 'personne',
+        localField: 'id_proprietaire',
+        foreignField: '_id',
+        as: 'proprietaire'
+    }};
+
+    let vProject = {
+    $project: {
+        _id: 0,
+        nom: 1,
+        couleur: 1,
+        annee_nais : 1,
+        annee_adopt : 1,
+        "proprietaire.nom" : 1,
+        "proprietaire.prenom" : 1,
+        "proprietaire.adresse.numero" :1,
+        "proprietaire.adresse.rue" : 1,
+        "proprietaire.adresse.ville":1
+    }};
+
+
+  db.collection("chats").aggregate(vLookup, vProject).toArray(function (error, results) {
       if (error) throw error;
       res.render('home.ejs', {bdd : results});
   });
-      console.log("Connecté à la base de données des chats");
 }
 
 //affiche le résultat d'une recherche par nom
