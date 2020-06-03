@@ -67,26 +67,24 @@ function displayRechercheCouleur(req, res){
 
 //ajoute un chat dans la BDD
 function addChat(req, res){
-  // extraction des données depuis mongoDB
-  client.connect(function(error, client) {
-          if (error) throw error;
-          const db = client.db('adopte_un_chaton');
-          let myobj = { nom: req.param("nom"), annee_nais: req.param("annee_nais"), couleur: req.param("couleur"),
-          annee_adopt : req.param("annee_adopt"), proprietaire: {nom: req.param("nom_prop"), prenom: req.param("prenom_prop"),
-          annee_nais: req.param("annee_nais_prop"), adresse: {numero: req.param("numero"), rue: req.param("rue"), ville: req.param("ville") }} };
+  let myobj = { nom: req.param("nom"), annee_nais: req.param("annee_nais"), couleur: req.param("couleur"),
+  annee_adopt : req.param("annee_adopt") };
 
-          db.collection("chats").insertOne(myobj, function(err, res) {
-            if (err) throw err;
-            console.log("1 document inserted");
-            db.close();
-         });
-      console.log("Connecté à la base de données des chats");
-  });
+  db.collection("chats").insertOne(myobj, function(err, res) {
+    if (err) throw err;
+    console.log("1 document inserted");
+ });
 }
 
 // ajoute une personne dans la bdd
 function addPersonne(req, res){
+  let myobj = {nom: req.param("nom_prop"), prenom: req.param("prenom_prop"),
+  annee_nais: req.param("annee_nais_prop"), adresse: {numero: req.param("numero"), rue: req.param("rue"), ville: req.param("ville") } };
 
+  db.collection("personne").insertOne(myobj, function(err, res) {
+    if (err) throw err;
+    console.log("Une nouvelle personne a été créée");
+ });
 }
 
 // fonction principale avec les routes
