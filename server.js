@@ -2,6 +2,30 @@ const express = require('express');
 const MongoClient = require("mongodb").MongoClient;
 const app = express();
 
+//fusion avec la collection 'personne'
+let vLookup = {$lookup:
+  {
+      from: 'personne',
+      localField: 'id_proprietaire',
+      foreignField: '_id',
+      as: 'proprietaire'
+  }};
+
+  // projection
+  let vProject = {
+  $project: {
+      _id: 0,
+      nom: 1,
+      couleur: 1,
+      annee_nais : 1,
+      annee_adopt : 1,
+      "proprietaire.nom" : 1,
+      "proprietaire.prenom" : 1,
+      "proprietaire.adresse.numero" :1,
+      "proprietaire.adresse.rue" : 1,
+      "proprietaire.adresse.ville":1
+  }};
+
 // si on rencontre une erreur en éxécutant une requete
 function erreurRequete(error, results){
   console.log("La requête a échoué");
@@ -16,28 +40,6 @@ function reussiteRequete(error, results){
 // affiche la totalité de la BDD sur la page d'accueil
 function displayHome(req, res){
   // extraction des données depuis mongoDB
-  let vLookup = {$lookup:
-    {
-        from: 'personne',
-        localField: 'id_proprietaire',
-        foreignField: '_id',
-        as: 'proprietaire'
-    }};
-
-    let vProject = {
-    $project: {
-        _id: 0,
-        nom: 1,
-        couleur: 1,
-        annee_nais : 1,
-        annee_adopt : 1,
-        "proprietaire.nom" : 1,
-        "proprietaire.prenom" : 1,
-        "proprietaire.adresse.numero" :1,
-        "proprietaire.adresse.rue" : 1,
-        "proprietaire.adresse.ville":1
-    }};
-
 
   db.collection("chats").aggregate(vLookup, vProject).toArray(function (error, results) {
       if (error) throw error;
@@ -51,7 +53,7 @@ function displayRechercheNom(req, res){
   client.connect(function(error, client) {
           if (error) throw error;
           const db = client.db('adopte_un_chaton');
-      db.collection("chats").find({nom : req.param("nom")}).toArray(function (error, results) {
+      db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray(function (error, results) {
           if (error) throw error;
           res.render('home.ejs', {bdd : results});
       });
@@ -65,7 +67,7 @@ function displayRechercheCouleur(req, res){
   client.connect(function(error, client) {
           if (error) throw error;
           const db = client.db('adopte_un_chaton');
-      db.collection("chats").find({couleur : req.param("couleur")}).toArray(function (error, results) {
+      db.collection("chats").aggregate({$match : {couleur : req.param("couleur")}}, vLookup, vProject).toArray(function (error, results) {
           if (error) throw error;
           res.render('home.ejs', {bdd : results});
       });
