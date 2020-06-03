@@ -50,29 +50,19 @@ function displayHome(req, res){
 //affiche le résultat d'une recherche par nom
 function displayRechercheNom(req, res){
   // extraction des données depuis mongoDB
-  client.connect(function(error, client) {
-          if (error) throw error;
-          const db = client.db('adopte_un_chaton');
-      db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray(function (error, results) {
-          if (error) throw error;
-          res.render('home.ejs', {bdd : results});
-      });
-      console.log("Connecté à la base de données des chats");
+  db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray(function (error, results) {
+      if (error) throw error;
+      res.render('home.ejs', {bdd : results});
   });
 }
 
 //affiche le résultat d'une recherche par couleur
 function displayRechercheCouleur(req, res){
   // extraction des données depuis mongoDB
-  client.connect(function(error, client) {
-          if (error) throw error;
-          const db = client.db('adopte_un_chaton');
-      db.collection("chats").aggregate({$match : {couleur : req.param("couleur")}}, vLookup, vProject).toArray(function (error, results) {
-          if (error) throw error;
-          res.render('home.ejs', {bdd : results});
-      });
-      console.log("Connecté à la base de données des chats");
-  });
+    db.collection("chats").aggregate({$match : {couleur : req.param("couleur")}}, vLookup, vProject).toArray(function (error, results) {
+      if (error) throw error;
+      res.render('home.ejs', {bdd : results});
+    });
 }
 
 //ajoute un chat dans la BDD
@@ -94,12 +84,18 @@ function addChat(req, res){
   });
 }
 
+// ajoute une personne dans la bdd
+function addPersonne(req, res){
+
+}
+
 // fonction principale avec les routes
 function startApp(){
   app.get('/', displayHome);
   app.get('/rechercheNom', displayRechercheNom);
   app.get('/rechercheCouleur', displayRechercheCouleur);
-  app.get('/ajout', addChat);
+  app.get('/ajoutChat', addChat);
+  app.get('/ajoutPersonne', addPersonne);
   app.listen(8080);
 }
 

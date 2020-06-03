@@ -74,7 +74,7 @@
 
       <h3>Ajout d'un chat</h3>
 
-      <form method="get" action="/ajout">
+      <form method="get" action="/ajoutChat">
         <div>
           <h4>Chat : </h4>
           <label for="name">Nom du chat :</label>
@@ -119,6 +119,41 @@
         <div class="button">
         <button type="submit">Rechercher</button>
     </div>
+
+
+
+
+    <h3>Ajout d'une personne</h3>
+
+    <form method="get" action="/ajoutPersonne">
+      <div>
+        <label for="name">Nom :</label>
+        <input type="text" id="nom_prop" name="nom_prop">
+
+        <label for="name">Prénom :</label>
+        <input type="text" id="prenom_prop" name="prenom_prop">
+
+        <label for="name">Année de naissance :</label>
+        <input type="text" id="annee_nais_prop" name="annee_nais_prop">
+
+        <div>
+          <h4>Adresse : </h4>
+
+          <label for="name">Numéro : </label>
+          <input type="text" id="numero" name="numero">
+
+          <label for="name"> Rue :</label>
+          <input type="text" id="rue" name="rue">
+
+          <label for="name">Ville :</label>
+          <input type="text" id="ville" name="ville">
+        </div>
+
+      </div>
+
+      <div class="button">
+      <button type="submit">Rechercher</button>
+  </div>
 
     <div>
       </form>
