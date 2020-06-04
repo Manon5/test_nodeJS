@@ -32,28 +32,28 @@ function erreurRequete(error, results){
   throw error;
 }
 
-//si on ne rencontre pas d'erreur
-function reussiteRequete(error, results){
-  //res.render('home.ejs', {bdd : results});
+function catchError(){
+  console.log("Requête invalide");
 }
+
+function displayRender(resultat, renvoi){
+  resultat.render('home.ejs', {bdd : renvoi});
+}
+
 
 // affiche la totalité de la BDD sur la page d'accueil
-function displayHome(req, res){
+async function displayHome(req, res){
   // extraction des données depuis mongoDB
-
-  db.collection("chats").aggregate(vLookup, vProject).toArray(function (error, results) {
-      if (error) throw error;
-      res.render('home.ejs', {bdd : results});
-  });
+  let requete = await db.collection("chats").aggregate(vLookup, vProject).toArray();
+  displayRender(res, requete);
 }
 
+
 //affiche le résultat d'une recherche par nom
-function displayRechercheNom(req, res){
+async function displayRechercheNom(req, res){
   // extraction des données depuis mongoDB
-  db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray(function (error, results) {
-      if (error) throw error;
-      res.render('home.ejs', {bdd : results});
-  });
+  let requete = await db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray(function (error, results) {
+  displayRender(res, requete);
 }
 
 //affiche le résultat d'une recherche par couleur
