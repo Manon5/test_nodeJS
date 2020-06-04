@@ -149,11 +149,22 @@
       <form method="get" action="/rechercheDeuxCouleurs">
         <label for="name">Première couleur :</label>
         <input type="text" id="color1" name="color1">
-          <label for="name">Deuxième couleur :</label>
-          <input type="text" id="color2" name="color2">
+        <label for="name">Deuxième couleur :</label>
+        <input type="text" id="color2" name="color2">
 
         <div class="button">
           <button type="submit">Rechercher</button>
+        </div>
+      </form>
+
+      <h3>Compter les chats par ville (plusieurs villes)</h3>
+
+      <form method="get" action="/rechercheVilles">
+        <label for="name">Nombre de villes à rechercher :</label>
+        <input type="text" id="nbVilles" name="nbVilles">
+
+        <div class="button">
+          <button type="submit">Aller à la page de recherche</button>
         </div>
       </form>
 

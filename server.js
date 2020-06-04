@@ -124,6 +124,11 @@ async function displayRecherche2Couleurs(req, res){
   displayRender(res, requete);
 }
 
+async function displayRechercheVilles(req, res){
+  // on affiche le formulaire de recherche
+  res.render('rechercheparvilles.ejs', {nb : req.query["nbVilles"]});
+}
+
 // fonction principale avec les routes
 function startApp(){
   app.get('/', displayHome);
@@ -133,7 +138,8 @@ function startApp(){
   app.get('/ajoutPersonne', addPersonne);
   app.get('/adoption', displayAdoption);
   app.get('/adopte', adopter);
-  app.get('/rechercheVille', displayRechercheVille)
+  app.get('/rechercheVille', displayRechercheVille);
+  app.get('/rechercheVilles', displayRechercheVilles);
   app.get('/rechercheDeuxCouleurs', displayRecherche2Couleurs)
   app.listen(8080);
 }
