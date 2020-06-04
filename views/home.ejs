@@ -72,34 +72,28 @@
     <div>
       </form>
 
-      <h3>Ajout d'un chat</h3>
+        <h3>Ajout d'un chat</h3>
 
-      <form method="get" action="/ajoutChat">
-        <div>
-          <h4>Chat : </h4>
-          <label for="name">Nom du chat :</label>
-          <input type="text" id="nom" name="nom">
+        <form method="get" action="/ajoutChat">
+          <div>
+            <h4>Chat : </h4>
+            <label for="name">Nom du chat :</label>
+            <input type="text" id="nom" name="nom">
 
-          <label for="name">Année de naissance :</label>
-          <input type="text" id="annee_nais" name="annee_nais">
+            <label for="name">Année de naissance :</label>
+            <input type="text" id="annee_nais" name="annee_nais">
 
-          <label for="name">Année d'adoption :</label>
-          <input type="text" id="annee_adopt" name="annee_adopt">
+            <label for="name"> Couleur(s) :</label>
+            <input type="text" id="couleur1" name="couleur1">
+            <input type="text" id="couleur2" name="couleur2">
+            <input type="text" id="couleur3" name="couleur3">
+          </div>
 
-          <label for="name"> Couleur(s) :</label>
-          <input type="text" id="couleur1" name="couleur1">
-          <input type="text" id="couleur2" name="couleur2">
-          <input type="text" id="couleur3" name="couleur3">
-        </div>
+          <div class="button">
+            <button type="submit">Rechercher</button>
+          </div>
 
-        <div class="button">
-        <button type="submit">Rechercher</button>
-    </div>
-
-  </form>
-
-
-
+    </form>
 
     <h3>Ajout d'une personne</h3>
 
@@ -126,15 +120,18 @@
           <label for="name">Ville :</label>
           <input type="text" id="ville" name="ville">
         </div>
-
       </div>
 
       <div class="button">
-      <button type="submit">Rechercher</button>
-  </div>
+        <button type="submit">Rechercher</button>
+      </div>
 
     <div>
-      </form>
+  </form>
+
+<h3>Adoption d'un chat</h3>
+
+<a href="/adoption"> Se rendre sur la page des adoptions </a>
 
 
 

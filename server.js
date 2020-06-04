@@ -37,6 +37,10 @@ function displayRender(resultat, renvoi){
   resultat.render('home.ejs', {bdd : renvoi});
 }
 
+function displayAdoptionRender(resultat, renvoiChat, renvoiPers){
+  resultat.render('adoption.ejs', {cats : renvoiChat, persons: renvoiPers});
+}
+
 // affiche la totalité de la BDD sur la page d'accueil
 async function displayHome(req, res){
   // extraction des données depuis mongoDB
@@ -60,26 +64,26 @@ async function displayRechercheCouleur(req, res){
 
 //ajoute un chat dans la BDD
 async function addChat(req, res){
-
-
-  let myobj = { nom: req.param("nom"), annee_nais: req.param("annee_nais"), couleur: [req.param("couleur1"), req.param("couleur2"), req.param("couleur3")],
-  annee_adopt : req.param("annee_adopt") };
-
-  db.collection("chats").insertOne(myobj, function(err, res) {
-    if (err) throw err;
-    console.log("1 document inserted");
- });
+  let myobj = {nom: req.param("nom"), annee_nais: req.param("annee_nais"), couleur: [req.param("couleur1"), req.param("couleur2"), req.param("couleur3")],
+  annee_adopt : "", id_proprietaire : ""};
+  let add = await db.collection("chats").insertOne(myobj);
+  console.log("Chat inséré dans la base de données");
 }
 
 // ajoute une personne dans la bdd
-function addPersonne(req, res){
+async function addPersonne(req, res){
   let myobj = {nom: req.param("nom_prop"), prenom: req.param("prenom_prop"),
   annee_nais: req.param("annee_nais_prop"), adresse: {numero: req.param("numero"), rue: req.param("rue"), ville: req.param("ville") } };
 
-  db.collection("personne").insertOne(myobj, function(err, res) {
-    if (err) throw err;
-    console.log("Une nouvelle personne a été créée");
- });
+  let add = await db.collection("personne").insertOne(myobj);
+  console.log("Personne insérée dans la base de données");
+}
+
+// permet à une personne enregistrée dans la BdD d'adopter un chat
+async function displayAdoption(req, res){
+  let requeteChat = await db.collection("chats").find({id_proprietaire : ""}).toArray();
+  let requetePers = await db.collection("personne").find().toArray();
+  displayAdoptionRender(res, requeteChat, requetePers);
 }
 
 // fonction principale avec les routes
@@ -89,6 +93,7 @@ function startApp(){
   app.get('/rechercheCouleur', displayRechercheCouleur);
   app.get('/ajoutChat', addChat);
   app.get('/ajoutPersonne', addPersonne);
+  app.get('/adoption', displayAdoption);
   app.listen(8080);
 }
 

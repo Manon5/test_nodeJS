@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+      <style>
+        table, tr, th, td{
+          border: 1px solid black;
+          border-collapse : collapse;
+          padding : 5px;
+        }
+      </style>
+    </head>
+
+    <body>
+      <center><h1> Adopter un chat </h1></center>
+      <h3> Voici la liste de tous les chats non adoptés : </h3>
+
+      <table>
+        <tr>
+          <td> Nom  </td>
+          <td> Couleurs  </td>
+          <td> Année de naissance </td>
+        </tr>
+        <%
+          for(var i = 0 ; i < cats.length ; i++) {
+        %>
+        <tr>
+            <td><%= cats[i].nom %></td>
+            <td><%= cats[i].couleur.toString() %></td>
+            <td><%= cats[i].annee_nais %></td>
+      </tr>
+        <% } %>
+      </table>
+
+      <h3> Adopter un chat : </h3>
+
+      <form method="get" action="/adopte">
+
+        <label for="name">Nom du propriétaire : </label>
+        <SELECT name="proprietaire" size="1">
+        <% for(var j = 0; j < persons.length ; j++){ %>
+          <OPTION><%= persons[j].nom %> <%= persons[j].prenom %>
+        <% } %>
+        </SELECT>
+
+        <label for="name">Nom du chat : </label>
+        <SELECT name="chat" size="1">
+        <% for(var j = 0; j < cats.length ; j++){ %>
+          <OPTION><%= cats[j].nom %>
+        <% } %>
+        </SELECT>
+
+        <div class="button">
+          <button type="submit">Adopter</button>
+        </div>
+
+      </form>
