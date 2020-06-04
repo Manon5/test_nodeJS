@@ -32,14 +32,10 @@ function erreurRequete(error, results){
   throw error;
 }
 
-function catchError(){
-  console.log("Requête invalide");
-}
-
+// affiche grace au template home.ejs le resultat de la requete
 function displayRender(resultat, renvoi){
   resultat.render('home.ejs', {bdd : renvoi});
 }
-
 
 // affiche la totalité de la BDD sur la page d'accueil
 async function displayHome(req, res){
@@ -48,26 +44,25 @@ async function displayHome(req, res){
   displayRender(res, requete);
 }
 
-
 //affiche le résultat d'une recherche par nom
 async function displayRechercheNom(req, res){
   // extraction des données depuis mongoDB
-  let requete = await db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray(function (error, results) {
+  let requete = await db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray();
   displayRender(res, requete);
 }
 
 //affiche le résultat d'une recherche par couleur
-function displayRechercheCouleur(req, res){
+async function displayRechercheCouleur(req, res){
   // extraction des données depuis mongoDB
-    db.collection("chats").aggregate({$match : {couleur : req.param("couleur")}}, vLookup, vProject).toArray(function (error, results) {
-      if (error) throw error;
-      res.render('home.ejs', {bdd : results});
-    });
+  let requete = await db.collection("chats").aggregate({$match : {couleur : req.param("couleur")}}, vLookup, vProject).toArray();
+  displayRender(res, requete);
 }
 
 //ajoute un chat dans la BDD
-function addChat(req, res){
-  let myobj = { nom: req.param("nom"), annee_nais: req.param("annee_nais"), couleur: req.param("couleur"),
+async function addChat(req, res){
+
+
+  let myobj = { nom: req.param("nom"), annee_nais: req.param("annee_nais"), couleur: [req.param("couleur1"), req.param("couleur2"), req.param("couleur3")],
   annee_adopt : req.param("annee_adopt") };
 
   db.collection("chats").insertOne(myobj, function(err, res) {
@@ -96,7 +91,6 @@ function startApp(){
   app.get('/ajoutPersonne', addPersonne);
   app.listen(8080);
 }
-
 
 // --------- Connexion à la BDD ----------- //
 // on instancie un client
