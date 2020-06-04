@@ -86,6 +86,26 @@ async function displayAdoption(req, res){
   displayAdoptionRender(res, requeteChat, requetePers);
 }
 
+// ajoute l'adoption demandée
+async function adopter(req, res){
+  let i = 0;
+  while(req.query["proprietaire"][i] !== " "){
+    i++;
+  }
+  // on sépare le nom du prénom (séparé par un espace dans req)
+  let nom_p = req.query["proprietaire"].substr(0, i);
+  let prenom_p = req.query["proprietaire"].substr(i+1);
+
+  // à partir du nom et prénom, on récupère l'id de la personne
+  let prop = await db.collection("personne").find({nom : "RAMM", prenom: "Arno"}).toArray();
+  let id_prop = prop[0]._id;
+
+  // on update le fichier du chat pour afficher le nouveau propriétaire
+  let adopt = db.collection("chats").updateOne({nom: req.query["chat"]}, { $set :{id_proprietaire : id_prop}});
+  console.log("Adoption réussie !")
+  //let arr = await Promise.all([adopt, id_prop]);
+}
+
 // fonction principale avec les routes
 function startApp(){
   app.get('/', displayHome);
@@ -94,6 +114,7 @@ function startApp(){
   app.get('/ajoutChat', addChat);
   app.get('/ajoutPersonne', addPersonne);
   app.get('/adoption', displayAdoption);
+  app.get('/adopte', adopter);
   app.listen(8080);
 }
 
