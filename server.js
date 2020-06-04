@@ -124,9 +124,18 @@ async function displayRecherche2Couleurs(req, res){
   displayRender(res, requete);
 }
 
+// affiche le formulaire pour rechercher par villes
 async function displayRechercheVilles(req, res){
   // on affiche le formulaire de recherche
   res.render('rechercheparvilles.ejs', {nb : req.query["nbVilles"]});
+}
+
+// affiche le résultat de la recherche par villes
+async function displayNombreParVilles(req, res){
+  let nbVilles = 0;
+  for(e in req.query) {
+  nbVilles++
+}
 }
 
 // fonction principale avec les routes
@@ -141,6 +150,7 @@ function startApp(){
   app.get('/rechercheVille', displayRechercheVille);
   app.get('/rechercheVilles', displayRechercheVilles);
   app.get('/rechercheDeuxCouleurs', displayRecherche2Couleurs)
+  app.get('/compteParVilles', displayNombreParVilles)
   app.listen(8080);
 }
 
