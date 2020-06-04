@@ -137,11 +137,9 @@ async function displayNombreParVilles(req, res){
   let listeVilles = [];
   for(e in req.query) {
     nbVilles++
-    listeVilles.push(req.query["v" + (nbVilles+1)])
-    console.log(req.query["v" + (nbVilles+1)]);
+    listeVilles.push(req.query["v" + (nbVilles)]);
   }
-  console.log(req.query);
-  let requete = await db.collection('chats').aggregate(vLookup, {$match : {"proprietaire.adresse.ville" : {"$in" : req.query}}}, vProject).toArray()
+  let requete = await db.collection('chats').aggregate(vLookup, {$match : {"proprietaire.adresse.ville" : {"$in" : listeVilles}}}, vProject).toArray()
   console.log("Il y a " + requete.length + " chats")
 
 }
