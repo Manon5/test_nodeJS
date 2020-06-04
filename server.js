@@ -132,11 +132,20 @@ async function displayRechercheVilles(req, res){
 
 // affiche le résultat de la recherche par villes
 async function displayNombreParVilles(req, res){
+  // on récupère le nombre de villes passées en paramètre
   let nbVilles = 0;
+  let listeVilles = [];
   for(e in req.query) {
-  nbVilles++
+    nbVilles++
+    listeVilles.push(req.query["v" + (nbVilles+1)])
+  }
+  console.log(req.query);
+    let requete = await db.collection("chats").find({"proprietaire.adresse.ville" : {$in : listeVilles}}).toArray();
+  console.log("Il y a " + requete.length + " chats")
+
 }
-}
+
+
 
 // fonction principale avec les routes
 function startApp(){
