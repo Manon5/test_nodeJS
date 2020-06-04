@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+      <style>
+        table, tr, th, td{
+          border: 1px solid black;
+          border-collapse : collapse;
+          padding : 5px;
+        }
+      </style>
+    </head>
+
+    <body>
+      <center><h1> Base de données de chats </h1></center>
+      <h3> Il y a <%= nbC %> chats dans la ville de <%= v %> : </h3>
+
+      <table>
+        <tr>
+          <td> Nom  </td>
+          <td> Couleurs  </td>
+          <td> Année de naissance </td>
+          <td> Année d'adoption </td>
+          <td> Propriétaire </td>
+          <td> Adresse du propriétaire </td>
+        </tr>
+        <%
+          for(var i = 0 ; i < bdd.length ; i++) {
+        %>
+        <tr>
+            <td><%= bdd[i].nom %></td>
+            <td><%= bdd[i].couleur.toString() %></td>
+            <td><%= bdd[i].annee_nais %></td>
+            <td><%= bdd[i].annee_adopt %></td>
+            <% if(typeof bdd[i].proprietaire[0] !== 'undefined'){ %>
+              <td><%= bdd[i].proprietaire[0].prenom %> <%= bdd[i].proprietaire[0].nom %></td>
+              <td><%= bdd[i].proprietaire[0].adresse.numero %>, <%= bdd[i].proprietaire[0].adresse.rue %> à <%= bdd[i].proprietaire[0].adresse.ville %></td>
+            <% }else{ %>
+                <td>Pas de propriétaire </td>
+            <% } %>
+      </tr>
+        <% } %>
+      </table>
+
+    </body>
+
+  </html>

@@ -41,6 +41,10 @@ function displayAdoptionRender(resultat, renvoiChat, renvoiPers){
   resultat.render('adoption.ejs', {cats : renvoiChat, persons: renvoiPers});
 }
 
+function displayChatParVille(resultat, listeChats, nbChat, ville){
+  resultat.render('chatparville.ejs', {bdd : listeChats, v: ville, nbC: nbChat});
+}
+
 // affiche la totalité de la BDD sur la page d'accueil
 async function displayHome(req, res){
   // extraction des données depuis mongoDB
@@ -106,6 +110,13 @@ async function adopter(req, res){
   //let arr = await Promise.all([adopt, id_prop]);
 }
 
+// affiche le nombre de chats adoptés dans une ville donnée
+async function displayRechercheVille(req, res){
+  // extraction des données depuis mongoDB
+  let requete = await db.collection("chats").aggregate(vLookup, {$match : {"proprietaire.adresse.ville" : req.query["ville"]}}, vProject).toArray();
+  displayChatParVille(res, requete, requete.length, req.query["ville"]);
+}
+
 // fonction principale avec les routes
 function startApp(){
   app.get('/', displayHome);
@@ -115,6 +126,7 @@ function startApp(){
   app.get('/ajoutPersonne', addPersonne);
   app.get('/adoption', displayAdoption);
   app.get('/adopte', adopter);
+  app.get('/rechercheVille', displayRechercheVille)
   app.listen(8080);
 }
 

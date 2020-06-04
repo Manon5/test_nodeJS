@@ -95,43 +95,54 @@
 
     </form>
 
-    <h3>Ajout d'une personne</h3>
+      <h3>Ajout d'une personne</h3>
 
-    <form method="get" action="/ajoutPersonne">
-      <div>
-        <label for="name">Nom :</label>
-        <input type="text" id="nom_prop" name="nom_prop">
+      <form method="get" action="/ajoutPersonne">
+        <div>
+          <label for="name">Nom :</label>
+          <input type="text" id="nom_prop" name="nom_prop">
 
-        <label for="name">Prénom :</label>
-        <input type="text" id="prenom_prop" name="prenom_prop">
+          <label for="name">Prénom :</label>
+          <input type="text" id="prenom_prop" name="prenom_prop">
 
-        <label for="name">Année de naissance :</label>
-        <input type="text" id="annee_nais_prop" name="annee_nais_prop">
+          <label for="name">Année de naissance :</label>
+          <input type="text" id="annee_nais_prop" name="annee_nais_prop">
+
+          <div>
+            <h4>Adresse : </h4>
+
+            <label for="name">Numéro : </label>
+            <input type="text" id="numero" name="numero">
+
+            <label for="name"> Rue :</label>
+            <input type="text" id="rue" name="rue">
+
+            <label for="name">Ville :</label>
+            <input type="text" id="ville" name="ville">
+          </div>
+        </div>
+
+        <div class="button">
+          <button type="submit">Rechercher</button>
+        </div>
 
         <div>
-          <h4>Adresse : </h4>
+      </form>
 
-          <label for="name">Numéro : </label>
-          <input type="text" id="numero" name="numero">
+      <h3>Adoption d'un chat</h3>
 
-          <label for="name"> Rue :</label>
-          <input type="text" id="rue" name="rue">
+      <a href="/adoption"> Se rendre sur la page des adoptions </a>
 
-          <label for="name">Ville :</label>
-          <input type="text" id="ville" name="ville">
+      <h3> Compter le nombre de chats par ville </h3>
+
+      <form method="get" action="/rechercheVille">
+        <label for="name">Ville :</label>
+        <input type="text" id="ville" name="ville">
+        
+        <div class="button">
+          <button type="submit">Rechercher</button>
         </div>
-      </div>
-
-      <div class="button">
-        <button type="submit">Rechercher</button>
-      </div>
-
-    <div>
-  </form>
-
-<h3>Adoption d'un chat</h3>
-
-<a href="/adoption"> Se rendre sur la page des adoptions </a>
+      </form>
 
 
 
