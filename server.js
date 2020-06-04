@@ -101,7 +101,7 @@ async function adopter(req, res){
   let prenom_p = req.query["proprietaire"].substr(i+1);
 
   // à partir du nom et prénom, on récupère l'id de la personne
-  let prop = await db.collection("personne").find({nom : "RAMM", prenom: "Arno"}).toArray();
+  let prop = await db.collection("personne").find({nom : nom_p, prenom: prenom_p}).toArray();
   let id_prop = prop[0]._id;
 
   // on update le fichier du chat pour afficher le nouveau propriétaire
@@ -117,6 +117,13 @@ async function displayRechercheVille(req, res){
   displayChatParVille(res, requete, requete.length, req.query["ville"]);
 }
 
+//affiche le résultat d'une recherche par 2 couleurs (OU logique)
+async function displayRecherche2Couleurs(req, res){
+  // extraction des données depuis mongoDB
+  let requete = await db.collection("chats").aggregate({$match : {$or : [{couleur : req.query["color1"]}, {couleur: req.query["color2"]}]}}, vLookup, vProject).toArray();
+  displayRender(res, requete);
+}
+
 // fonction principale avec les routes
 function startApp(){
   app.get('/', displayHome);
@@ -127,6 +134,7 @@ function startApp(){
   app.get('/adoption', displayAdoption);
   app.get('/adopte', adopter);
   app.get('/rechercheVille', displayRechercheVille)
+  app.get('/rechercheDeuxCouleurs', displayRecherche2Couleurs)
   app.listen(8080);
 }
 
