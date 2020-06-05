@@ -38,7 +38,7 @@ function erreurRequete(error, results){
 
 // affiche grace au template home.ejs le resultat de la requete
 function displayRender(resultat, renvoi){
-  resultat.render('home.ejs', {bdd : renvoi});
+  resultat.render('home.ejs', {bdd : renvoi, db: config.database});
 }
 
 function displayAdoptionRender(resultat, renvoiChat, renvoiPers){
@@ -57,8 +57,12 @@ async function displayHome(req, res){
     displayRender(res, requete);
   } else {
     // solution SQL
-    let requete = await client.query("SELECT nom FROM  \"CHAT\" WHERE id = 1");
+    let requete = await client.query(
+      "SELECT DISTINCT \"CHAT\".nom AS nom, \"CHAT\".couleurs AS couleur, \"CHAT\".datenais AS annee_nais, \"ADOPTION\".dateadopt AS annee_adopt, \"PERSONNE\".nom AS nom_prop, \"PERSONNE\".prenom AS prenom_prop, \"ADRESSE\".numero AS numero, \"ADRESSE\".rue AS rue, \"ADRESSE\".ville AS ville " +
+      "FROM \"CHAT\", \"ADOPTION\",\"PERSONNE\", \"ADRESSE\" " +
+      "WHERE \"CHAT\".id = \"ADOPTION\".idchat AND \"ADOPTION\".idprop = \"PERSONNE\".id AND \"PERSONNE\".idadresse = \"ADRESSE\".id" );
     console.log(requete.rows[0].nom);
+    displayRender(res, requete.rows);
   }
 }
 

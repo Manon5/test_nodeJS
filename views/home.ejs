@@ -32,11 +32,17 @@
             <td><%= bdd[i].couleur.toString() %></td>
             <td><%= bdd[i].annee_nais %></td>
             <td><%= bdd[i].annee_adopt %></td>
-            <% if(typeof bdd[i].proprietaire[0] !== 'undefined'){ %>
-              <td><%= bdd[i].proprietaire[0].prenom %> <%= bdd[i].proprietaire[0].nom %></td>
-              <td><%= bdd[i].proprietaire[0].adresse.numero %>, <%= bdd[i].proprietaire[0].adresse.rue %> à <%= bdd[i].proprietaire[0].adresse.ville %></td>
+            <% if(db === "mongodb"){ %>
+
+              <% if(typeof proprietaire[0] === 'undefined'){ %>
+                  <td>Pas de propriétaire </td>
+              <% }else{ %>
+                <td><%= bdd[i].proprietaire[0].prenom %> <%= bdd[i].proprietaire[0].nom %></td>
+                <td><%= bdd[i].proprietaire[0].adresse.numero %>, <%= bdd[i].proprietaire[0].adresse.rue %> à <%= bdd[i].proprietaire[0].adresse.ville %></td>
+              <% }%>
             <% }else{ %>
-                <td>Pas de propriétaire </td>
+              <td><%= bdd[i].nom_prop %> <%= bdd[i].prenom_prop %></td>
+              <td><%= bdd[i].numero %>, <%= bdd[i].rue %> à <%= bdd[i].ville %></td>
             <% } %>
       </tr>
         <% } %>
