@@ -227,17 +227,16 @@ function startApp(){
 }
 
 // --------- Connexion à la BDD ----------- //
-
 if(config.database === 'mongodb'){
    // solution mongoDB
    // on instancie un client
-   let cl = new MongoClient('mongodb://localhost:27017', {
+   client = new MongoClient('mongodb://localhost:27017', {
        useNewUrlParser: true,
        useUnifiedTopology: true
    });
 
    //accès à la base de données
-   const db = cl.db('adopte_un_chaton');
+   const db = client.db('adopte_un_chaton');
 
    // on initialise la connexion
    client.connect(function(error){
@@ -249,11 +248,11 @@ if(config.database === 'mongodb'){
    });
 }else{
   // solution sql
-  let cl = new Client({
+  client = new Client({
       user: 'postgres',
       host: 'localhost',
       database: 'adopte_un_chaton',
-      password: 'Bemuwu_5',
+      password: '',
       port: 5432,
   });
 
@@ -266,5 +265,3 @@ if(config.database === 'mongodb'){
       }
   });
 }
-
-const client = cl;
