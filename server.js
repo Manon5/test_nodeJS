@@ -73,7 +73,13 @@ async function displayRechercheNom(req, res){
     let requete = await db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray();
     displayRender(res, requete);
   } else {
-   // solution SQL
+    // solution SQL
+    let requete = await client.query(
+      "SELECT DISTINCT \"CHAT\".nom AS nom, \"CHAT\".couleurs AS couleur, \"CHAT\".datenais AS annee_nais, \"ADOPTION\".dateadopt AS annee_adopt, \"PERSONNE\".nom AS nom_prop, \"PERSONNE\".prenom AS prenom_prop, \"ADRESSE\".numero AS numero, \"ADRESSE\".rue AS rue, \"ADRESSE\".ville AS ville " +
+      "FROM \"CHAT\", \"ADOPTION\",\"PERSONNE\", \"ADRESSE\" " +
+      "WHERE \"CHAT\".nom = \'" + req.query["nom"] + "\' AND \"CHAT\".id = \"ADOPTION\".idchat AND \"ADOPTION\".idprop = \"PERSONNE\".id AND \"PERSONNE\".idadresse = \"ADRESSE\".id" );
+    console.log(requete.rows[0].nom);
+    displayRender(res, requete.rows);
   }
 
 }
@@ -221,17 +227,17 @@ function startApp(){
 }
 
 // --------- Connexion à la BDD ----------- //
-let client;
+
 if(config.database === 'mongodb'){
    // solution mongoDB
    // on instancie un client
-   client = new MongoClient('mongodb://localhost:27017', {
+   let cl = new MongoClient('mongodb://localhost:27017', {
        useNewUrlParser: true,
        useUnifiedTopology: true
    });
 
    //accès à la base de données
-   const db = client.db('adopte_un_chaton');
+   const db = cl.db('adopte_un_chaton');
 
    // on initialise la connexion
    client.connect(function(error){
@@ -243,11 +249,11 @@ if(config.database === 'mongodb'){
    });
 }else{
   // solution sql
-  client = new Client({
+  let cl = new Client({
       user: 'postgres',
       host: 'localhost',
       database: 'adopte_un_chaton',
-      password: '',
+      password: 'Bemuwu_5',
       port: 5432,
   });
 
@@ -260,3 +266,5 @@ if(config.database === 'mongodb'){
       }
   });
 }
+
+const client = cl;
