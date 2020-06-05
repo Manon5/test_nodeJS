@@ -2,6 +2,9 @@ const express = require('express');
 const MongoClient = require("mongodb").MongoClient;
 const app = express();
 
+// permet de choisir la solution de base de données
+const config = require('./config.json');
+
 //fusion avec la collection 'personne'
 let vLookup = {$lookup:
   {
@@ -48,46 +51,75 @@ function displayChatParVille(resultat, listeChats, nbChat, ville){
 // affiche la totalité de la BDD sur la page d'accueil
 async function displayHome(req, res){
   // extraction des données depuis mongoDB
-  let requete = await db.collection("chats").aggregate(vLookup, vProject).toArray();
-  displayRender(res, requete);
+  if(config.database === 'mongodb') {
+    let requete = await db.collection("chats").aggregate(vLookup, vProject).toArray();
+    displayRender(res, requete);
+  } else {
+    // solution SQL
+  }
 }
 
 //affiche le résultat d'une recherche par nom
 async function displayRechercheNom(req, res){
   // extraction des données depuis mongoDB
-  let requete = await db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray();
-  displayRender(res, requete);
+  if(config.database === 'mongodb') {
+    let requete = await db.collection("chats").aggregate({$match : {nom : req.param("nom")}}, vLookup, vProject).toArray();
+    displayRender(res, requete);
+  } else {
+   // solution SQL
+  }
+
 }
 
 //affiche le résultat d'une recherche par couleur
 async function displayRechercheCouleur(req, res){
-  // extraction des données depuis mongoDB
-  let requete = await db.collection("chats").aggregate({$match : {couleur : req.param("couleur")}}, vLookup, vProject).toArray();
-  displayRender(res, requete);
+  // extraction des données depuis la BDD
+  if(config.database === 'mongodb') {
+    let requete = await db.collection("chats").aggregate({$match : {couleur : req.param("couleur")}}, vLookup, vProject).toArray();
+    displayRender(res, requete);
+  } else {
+    // solution sql
+  }
 }
 
 //ajoute un chat dans la BDD
 async function addChat(req, res){
-  let myobj = {nom: req.param("nom"), annee_nais: req.param("annee_nais"), couleur: [req.param("couleur1"), req.param("couleur2"), req.param("couleur3")],
-  annee_adopt : "", id_proprietaire : ""};
-  let add = await db.collection("chats").insertOne(myobj);
-  console.log("Chat inséré dans la base de données");
+  if(config.database === 'mongodb') {
+    // solution mongodb
+    let myobj = {nom: req.param("nom"), annee_nais: req.param("annee_nais"), couleur: [req.param("couleur1"), req.param("couleur2"), req.param("couleur3")],
+    annee_adopt : "", id_proprietaire : ""};
+    let add = await db.collection("chats").insertOne(myobj);
+    console.log("Chat inséré dans la base de données");
+  } else {
+    // solution sql
+  }
+
 }
 
 // ajoute une personne dans la bdd
 async function addPersonne(req, res){
-  let myobj = {nom: req.param("nom_prop"), prenom: req.param("prenom_prop"),
-  annee_nais: req.param("annee_nais_prop"), adresse: {numero: req.param("numero"), rue: req.param("rue"), ville: req.param("ville") } };
+  if(config.database === 'mongodb') {
+    // solution mongo
+    let myobj = {nom: req.param("nom_prop"), prenom: req.param("prenom_prop"),
+    annee_nais: req.param("annee_nais_prop"), adresse: {numero: req.param("numero"), rue: req.param("rue"), ville: req.param("ville") } };
+    let add = await db.collection("personne").insertOne(myobj);
+    console.log("Personne insérée dans la base de données");
+  } else {
+    //solution sql
+  }
 
-  let add = await db.collection("personne").insertOne(myobj);
-  console.log("Personne insérée dans la base de données");
 }
 
 // permet à une personne enregistrée dans la BdD d'adopter un chat
 async function displayAdoption(req, res){
-  let requeteChat = await db.collection("chats").find({id_proprietaire : ""}).toArray();
-  let requetePers = await db.collection("personne").find().toArray();
-  displayAdoptionRender(res, requeteChat, requetePers);
+  if(config.database === 'mongodb') {
+    // solution mongo
+    let requeteChat = await db.collection("chats").find({id_proprietaire : ""}).toArray();
+    let requetePers = await db.collection("personne").find().toArray();
+    displayAdoptionRender(res, requeteChat, requetePers);
+  } else {
+    // solution sql
+  }
 }
 
 // ajoute l'adoption demandée
@@ -100,28 +132,40 @@ async function adopter(req, res){
   let nom_p = req.query["proprietaire"].substr(0, i);
   let prenom_p = req.query["proprietaire"].substr(i+1);
 
+  if(config.database === 'mongodb') {
+  // solution mongo
   // à partir du nom et prénom, on récupère l'id de la personne
   let prop = await db.collection("personne").find({nom : nom_p, prenom: prenom_p}).toArray();
   let id_prop = prop[0]._id;
-
   // on update le fichier du chat pour afficher le nouveau propriétaire
   let adopt = db.collection("chats").updateOne({nom: req.query["chat"]}, { $set :{id_proprietaire : id_prop}});
-  console.log("Adoption réussie !")
-  //let arr = await Promise.all([adopt, id_prop]);
+  console.log("Adoption réussie !");
+} else {
+  // solution sql
+}
 }
 
 // affiche le nombre de chats adoptés dans une ville donnée
 async function displayRechercheVille(req, res){
-  // extraction des données depuis mongoDB
-  let requete = await db.collection("chats").aggregate(vLookup, {$match : {"proprietaire.adresse.ville" : req.query["ville"]}}, vProject).toArray();
-  displayChatParVille(res, requete, requete.length, req.query["ville"]);
+  if(config.database === 'mongodb') {
+    // solution mongo
+    let requete = await db.collection("chats").aggregate(vLookup, {$match : {"proprietaire.adresse.ville" : req.query["ville"]}}, vProject).toArray();
+    displayChatParVille(res, requete, requete.length, req.query["ville"]);
+  } else {
+    // solution sql
+  }
 }
 
 //affiche le résultat d'une recherche par 2 couleurs (OU logique)
 async function displayRecherche2Couleurs(req, res){
-  // extraction des données depuis mongoDB
-  let requete = await db.collection("chats").aggregate({$match : {$or : [{couleur : req.query["color1"]}, {couleur: req.query["color2"]}]}}, vLookup, vProject).toArray();
-  displayRender(res, requete);
+  if(config.database === 'mongodb') {
+    // solution mongo
+    let requete = await db.collection("chats").aggregate({$match : {$or : [{couleur : req.query["color1"]}, {couleur: req.query["color2"]}]}}, vLookup, vProject).toArray();
+    displayRender(res, requete);
+  } else {
+    // solution sql
+  }
+
 }
 
 // affiche le formulaire pour rechercher par villes
@@ -129,6 +173,8 @@ async function displayRechercheVilles(req, res){
   // on affiche le formulaire de recherche
   res.render('rechercheparvilles.ejs', {nb : req.query["nbVilles"]});
 }
+
+
 
 // affiche le résultat de la recherche par villes
 async function displayNombreParVilles(req, res){
@@ -139,10 +185,14 @@ async function displayNombreParVilles(req, res){
     nbVilles++
     listeVilles.push(req.query["v" + (nbVilles)]);
   }
-  let requete = await db.collection('chats').aggregate([vLookup, {$match : {"proprietaire.adresse.ville" : {"$in" : listeVilles}}}, {$count : "nb_chats"}]).toArray()
 
-  res.render('compteparville.ejs', {nbC : requete[0].nb_chats, lV: listeVilles, nbV : nbVilles});
-
+  if(config.database === 'mongodb') {
+    // solution mongoDB
+    let requete = await db.collection('chats').aggregate([vLookup, {$match : {"proprietaire.adresse.ville" : {"$in" : listeVilles}}}, {$count : "nb_chats"}]).toArray()
+    res.render('compteparville.ejs', {nbC : requete[0].nb_chats, lV: listeVilles, nbV : nbVilles});
+  } else {
+    // solution sql
+  }
 }
 
 
