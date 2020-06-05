@@ -1,6 +1,7 @@
 const express = require('express');
-const MongoClient = require("mongodb").MongoClient;
 const app = express();
+const MongoClient = require("mongodb").MongoClient;
+const { Client } = require('pg');
 
 // permet de choisir la solution de base de données
 const config = require('./config.json');
@@ -56,6 +57,8 @@ async function displayHome(req, res){
     displayRender(res, requete);
   } else {
     // solution SQL
+    let requete = await client.query("SELECT nom FROM  \"CHAT\" WHERE id = 1");
+    console.log(requete.rows[0].nom);
   }
 }
 
@@ -214,18 +217,42 @@ function startApp(){
 }
 
 // --------- Connexion à la BDD ----------- //
-// on instancie un client
-const client = new MongoClient('mongodb://localhost:27017', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-// on initialise la connexion
-client.connect(function(error){
-    if(error) {
-        throw error;
-    } else {
-        startApp();
-    }
-});
-//accès à la base de données
-const db = client.db('adopte_un_chaton');
+let client;
+if(config.database === 'mongodb'){
+   // solution mongoDB
+   // on instancie un client
+   client = new MongoClient('mongodb://localhost:27017', {
+       useNewUrlParser: true,
+       useUnifiedTopology: true
+   });
+
+   //accès à la base de données
+   const db = client.db('adopte_un_chaton');
+
+   // on initialise la connexion
+   client.connect(function(error){
+       if(error) {
+           throw error;
+       } else {
+           startApp();
+       }
+   });
+}else{
+  // solution sql
+  client = new Client({
+      user: 'postgres',
+      host: 'localhost',
+      database: 'adopte_un_chaton',
+      password: '',
+      port: 5432,
+  });
+
+  // on initialise la connexion
+  client.connect(function(error){
+      if(error) {
+          throw error;
+      } else {
+          startApp();
+      }
+  });
+}
